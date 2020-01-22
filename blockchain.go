@@ -1,9 +1,13 @@
 // Package blockchain is a library for creating and running blockchains.
 package blockchain
 
-import "time"
-
-import "sync"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strconv"
+	"sync"
+	"time"
+)
 
 var mutex = &sync.Mutex{}
 
@@ -17,8 +21,8 @@ type Block struct {
 	Index        int
 	Timestamp    string
 	Data         string
-	Hash         string
 	PreviousHash string
+	Hash         string
 }
 
 // New creates and returns a new Blockchain.
@@ -37,4 +41,14 @@ func New() Blockchain {
 	mutex.Unlock()
 
 	return blockchain
+}
+
+func (b Block) calculateHash() string {
+	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
+
+	h := sha256.New()
+	h.Write([]byte(record))
+	hashed := h.Sum(nil)
+
+	return hex.EncodeToString(hashed)
 }

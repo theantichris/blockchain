@@ -1,6 +1,11 @@
 package blockchain
 
-import "testing"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strconv"
+	"testing"
+)
 
 func TestNew(t *testing.T) {
 	blockchain := New()
@@ -17,5 +22,27 @@ func TestNew(t *testing.T) {
 
 	if got.Timestamp == "" {
 		t.Error("got empty Timestamp")
+	}
+}
+
+func TestCalculateHash(t *testing.T) {
+	block := Block{
+		Index:        0,
+		Timestamp:    "timestamp string",
+		Data:         "data string",
+		PreviousHash: "",
+	}
+
+	block.Hash = block.calculateHash()
+
+	record := strconv.Itoa(block.Index) + block.Timestamp + block.Data + block.PreviousHash
+	h := sha256.New()
+	h.Write([]byte(record))
+	hashed := h.Sum(nil)
+
+	want := hex.EncodeToString(hashed)
+
+	if block.Hash != want {
+		t.Errorf("got %q want %q", block.Hash, want)
 	}
 }
