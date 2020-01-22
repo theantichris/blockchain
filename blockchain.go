@@ -25,7 +25,7 @@ type Block struct {
 
 // New creates and returns a new Blockchain.
 func New() Blockchain {
-	blockchain := Blockchain{}
+	var blockchain Blockchain
 
 	t := time.Now()
 
