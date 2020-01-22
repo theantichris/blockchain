@@ -43,7 +43,8 @@ func New() Blockchain {
 	return blockchain
 }
 
-func (b Block) calculateHash() string {
+// CalculateHash calculates and returns the hash of a Block.
+func (b Block) CalculateHash() string {
 	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
 
 	h := sha256.New()

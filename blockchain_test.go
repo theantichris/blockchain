@@ -33,7 +33,7 @@ func TestCalculateHash(t *testing.T) {
 		PreviousHash: "",
 	}
 
-	block.Hash = block.calculateHash()
+	block.Hash = block.CalculateHash()
 
 	record := strconv.Itoa(block.Index) + block.Timestamp + block.Data + block.PreviousHash
 	h := sha256.New()
