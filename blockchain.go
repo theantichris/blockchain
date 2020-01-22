@@ -11,12 +11,10 @@ import (
 
 var mutex = &sync.Mutex{}
 
-// Blockchain contains the blocks in the chain.
-type Blockchain struct {
-	Blocks []Block
-}
+// Blockchain contains the Blocks in the chain.
+type Blockchain []Block
 
-// Block contains the data stored in the blockchain.
+// Block contains the data stored in the Blockchain.
 type Block struct {
 	Index        int
 	Timestamp    string
@@ -37,7 +35,7 @@ func New() Blockchain {
 	}
 
 	mutex.Lock()
-	blockchain.Blocks = append(blockchain.Blocks, block)
+	blockchain = append(blockchain, block)
 	mutex.Unlock()
 
 	return blockchain
