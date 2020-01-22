@@ -12,7 +12,7 @@ import (
 var mutex = &sync.Mutex{}
 
 // Blockchain contains the Blocks in the chain.
-type Blockchain []Block
+var Blockchain []Block
 
 // Block contains the data stored in the Blockchain.
 type Block struct {
@@ -24,8 +24,8 @@ type Block struct {
 }
 
 // New creates and returns a new Blockchain.
-func New() Blockchain {
-	var blockchain Blockchain
+func New() {
+	Blockchain = nil
 
 	t := time.Now()
 
@@ -33,12 +33,30 @@ func New() Blockchain {
 		Index:     0,
 		Timestamp: t.String(),
 	}
+	block.Hash = block.CalculateHash()
 
 	mutex.Lock()
-	blockchain = append(blockchain, block)
+	Blockchain = append(Blockchain, block)
+	mutex.Unlock()
+}
+
+// AddBlock creates a new Block, adds it to the Blockchain, then returns the Block.
+func AddBlock(data string) Block {
+	var block Block
+
+	t := time.Now()
+
+	block.Index = len(Blockchain)
+	block.Timestamp = t.String()
+	block.Data = data
+	block.PreviousHash = Blockchain[block.Index-1].Hash
+	block.Hash = block.CalculateHash()
+
+	mutex.Lock()
+	Blockchain = append(Blockchain, block)
 	mutex.Unlock()
 
-	return blockchain
+	return block
 }
 
 // CalculateHash calculates and returns the hash of a Block.
