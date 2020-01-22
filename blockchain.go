@@ -3,6 +3,10 @@ package blockchain
 
 import "time"
 
+import "sync"
+
+var mutex = &sync.Mutex{}
+
 // Blockchain contains the blocks in the chain.
 type Blockchain struct {
 	Blocks []Block
@@ -28,7 +32,9 @@ func New() Blockchain {
 		Timestamp: t.String(),
 	}
 
+	mutex.Lock()
 	blockchain.Blocks = append(blockchain.Blocks, block)
+	mutex.Unlock()
 
 	return blockchain
 }
