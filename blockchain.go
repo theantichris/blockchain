@@ -12,10 +12,9 @@ import (
 var mutex = &sync.Mutex{}
 
 // Blockchain contains the Blocks in the chain.
-var Blockchain []Block
+var Blockchain []block
 
-// Block contains the data stored in the Blockchain.
-type Block struct {
+type block struct {
 	Index        int
 	Timestamp    string
 	Data         string
@@ -29,38 +28,38 @@ func New() {
 
 	t := time.Now()
 
-	block := Block{
+	genesisBlock := block{
 		Index:     0,
 		Timestamp: t.String(),
 	}
-	block.Hash = block.calculateHash()
+	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	mutex.Lock()
-	Blockchain = append(Blockchain, block)
+	Blockchain = append(Blockchain, genesisBlock)
 	mutex.Unlock()
 }
 
 // AddBlock creates a new Block, adds it to the Blockchain, then returns the Block.
-func AddBlock(data string) Block {
-	var block Block
+func AddBlock(data string) block {
+	var newBlock block
 
 	t := time.Now()
 
-	block.Index = len(Blockchain)
-	block.Timestamp = t.String()
-	block.Data = data
-	block.PreviousHash = Blockchain[block.Index-1].Hash
-	block.Hash = block.calculateHash()
+	newBlock.Index = len(Blockchain)
+	newBlock.Timestamp = t.String()
+	newBlock.Data = data
+	newBlock.PreviousHash = Blockchain[newBlock.Index-1].Hash
+	newBlock.Hash = newBlock.calculateHash()
 
 	mutex.Lock()
-	Blockchain = append(Blockchain, block)
+	Blockchain = append(Blockchain, newBlock)
 	mutex.Unlock()
 
-	return block
+	return newBlock
 }
 
 // calculateHash calculates and returns the hash of a Block.
-func (b Block) calculateHash() string {
+func (b block) calculateHash() string {
 	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
 
 	h := sha256.New()
