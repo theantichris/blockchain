@@ -55,8 +55,8 @@ func TestAddBlock(t *testing.T) {
 		t.Errorf("the previous block's hash does not match: got %q want %q", block.PreviousHash, Blockchain[block.Index-1].Hash)
 	}
 
-	if block.Hash != block.CalculateHash() {
-		t.Errorf("the block did the correct hash: got %q want %q", block.Hash, block.CalculateHash())
+	if block.Hash != block.calculateHash() {
+		t.Errorf("the block did the correct hash: got %q want %q", block.Hash, block.calculateHash())
 	}
 }
 
@@ -68,7 +68,7 @@ func TestCalculateHash(t *testing.T) {
 		PreviousHash: "",
 	}
 
-	block.Hash = block.CalculateHash()
+	block.Hash = block.calculateHash()
 
 	record := strconv.Itoa(block.Index) + block.Timestamp + block.Data + block.PreviousHash
 	h := sha256.New()

@@ -33,7 +33,7 @@ func New() {
 		Index:     0,
 		Timestamp: t.String(),
 	}
-	block.Hash = block.CalculateHash()
+	block.Hash = block.calculateHash()
 
 	mutex.Lock()
 	Blockchain = append(Blockchain, block)
@@ -50,7 +50,7 @@ func AddBlock(data string) Block {
 	block.Timestamp = t.String()
 	block.Data = data
 	block.PreviousHash = Blockchain[block.Index-1].Hash
-	block.Hash = block.CalculateHash()
+	block.Hash = block.calculateHash()
 
 	mutex.Lock()
 	Blockchain = append(Blockchain, block)
@@ -59,8 +59,8 @@ func AddBlock(data string) Block {
 	return block
 }
 
-// CalculateHash calculates and returns the hash of a Block.
-func (b Block) CalculateHash() string {
+// calculateHash calculates and returns the hash of a Block.
+func (b Block) calculateHash() string {
 	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
 
 	h := sha256.New()
