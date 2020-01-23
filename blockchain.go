@@ -11,8 +11,7 @@ import (
 
 var mutex = &sync.Mutex{}
 
-// Blockchain contains the Blocks in the chain.
-var Blockchain []block
+var blockchain []block
 
 type block struct {
 	Index        int
@@ -22,9 +21,11 @@ type block struct {
 	Hash         string
 }
 
-// New creates and returns a new Blockchain.
+// New initializes the blockchain with a genesis block.
 func New() {
-	Blockchain = nil
+	if blockchain != nil {
+		return
+	}
 
 	t := time.Now()
 
@@ -35,30 +36,29 @@ func New() {
 	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	mutex.Lock()
-	Blockchain = append(Blockchain, genesisBlock)
+	blockchain = append(blockchain, genesisBlock)
 	mutex.Unlock()
 }
 
-// AddBlock creates a new Block, adds it to the Blockchain, then returns the Block.
+// AddBlock creates a new block, adds it to the blockchain, and returns the new block.
 func AddBlock(data string) block {
 	var newBlock block
 
 	t := time.Now()
 
-	newBlock.Index = len(Blockchain)
+	newBlock.Index = len(blockchain)
 	newBlock.Timestamp = t.String()
 	newBlock.Data = data
-	newBlock.PreviousHash = Blockchain[newBlock.Index-1].Hash
+	newBlock.PreviousHash = blockchain[newBlock.Index-1].Hash
 	newBlock.Hash = newBlock.calculateHash()
 
 	mutex.Lock()
-	Blockchain = append(Blockchain, newBlock)
+	blockchain = append(blockchain, newBlock)
 	mutex.Unlock()
 
 	return newBlock
 }
 
-// calculateHash calculates and returns the hash of a Block.
 func (b block) calculateHash() string {
 	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
 

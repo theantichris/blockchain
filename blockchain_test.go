@@ -10,11 +10,11 @@ import (
 func TestNew(t *testing.T) {
 	New()
 
-	if len(Blockchain) == 0 {
+	if len(blockchain) == 0 {
 		t.Fatal("genesis block was not generated")
 	}
 
-	got := Blockchain[0]
+	got := blockchain[0]
 
 	if got.Index != 0 {
 		t.Errorf("got Index %d want %d", got.Index, 0)
@@ -31,16 +31,16 @@ func TestAddBlock(t *testing.T) {
 	data := `{"key": "value"}`
 	newBlock := AddBlock(data)
 
-	if len(Blockchain) != 2 {
+	if len(blockchain) != 2 {
 		t.Fatal("the block was not added to the chain")
 	}
 
-	if newBlock.Index != len(Blockchain)-1 {
-		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, len(Blockchain)-1)
+	if newBlock.Index != len(blockchain)-1 {
+		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, len(blockchain)-1)
 	}
 
-	if newBlock != Blockchain[len(Blockchain)-1] {
-		t.Errorf("block does not match last block on chain: got %v want %v", newBlock, Blockchain[len(Blockchain)-1])
+	if newBlock != blockchain[len(blockchain)-1] {
+		t.Errorf("block does not match last block on chain: got %v want %v", newBlock, blockchain[len(blockchain)-1])
 	}
 
 	if newBlock.Timestamp == "" {
@@ -51,8 +51,8 @@ func TestAddBlock(t *testing.T) {
 		t.Errorf("the data was not saved to the block: got %q want %q", newBlock.Data, data)
 	}
 
-	if newBlock.PreviousHash != Blockchain[newBlock.Index-1].Hash {
-		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, Blockchain[newBlock.Index-1].Hash)
+	if newBlock.PreviousHash != blockchain[newBlock.Index-1].Hash {
+		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, blockchain[newBlock.Index-1].Hash)
 	}
 
 	if newBlock.Hash != newBlock.calculateHash() {
