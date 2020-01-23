@@ -42,14 +42,15 @@ func New() {
 
 // AddBlock creates a new block, adds it to the blockchain, and returns the new block.
 func AddBlock(data string) block {
-	var newBlock block
-
 	t := time.Now()
+	index := len(blockchain)
 
-	newBlock.Index = len(blockchain)
-	newBlock.Timestamp = t.String()
-	newBlock.Data = data
-	newBlock.PreviousHash = blockchain[newBlock.Index-1].Hash
+	newBlock := block{
+		Index:        index,
+		Timestamp:    t.String(),
+		Data:         data,
+		PreviousHash: blockchain[index-1].Hash,
+	}
 	newBlock.Hash = newBlock.calculateHash()
 
 	mutex.Lock()

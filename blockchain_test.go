@@ -17,11 +17,11 @@ func TestNew(t *testing.T) {
 	got := blockchain[0]
 
 	if got.Index != 0 {
-		t.Errorf("got Index %d want %d", got.Index, 0)
+		t.Errorf("genesis block has an incorrect Index %d want %d", got.Index, 0)
 	}
 
 	if got.Timestamp == "" {
-		t.Error("got empty Timestamp")
+		t.Error("genesis block has an empty Timestamp")
 	}
 }
 
@@ -40,11 +40,11 @@ func TestAddBlock(t *testing.T) {
 	}
 
 	if newBlock != blockchain[len(blockchain)-1] {
-		t.Errorf("block does not match last block on chain: got %v want %v", newBlock, blockchain[len(blockchain)-1])
+		t.Errorf("the block does not match last block on chain: got %v want %v", newBlock, blockchain[len(blockchain)-1])
 	}
 
 	if newBlock.Timestamp == "" {
-		t.Error("the block did not save the timestamp")
+		t.Error("the block does not have a timestamp")
 	}
 
 	if newBlock.Data != data {
@@ -56,7 +56,7 @@ func TestAddBlock(t *testing.T) {
 	}
 
 	if newBlock.Hash != newBlock.calculateHash() {
-		t.Errorf("the block did the correct hash: got %q want %q", newBlock.Hash, newBlock.calculateHash())
+		t.Errorf("the block did not get the correct hash: got %q want %q", newBlock.Hash, newBlock.calculateHash())
 	}
 }
 
