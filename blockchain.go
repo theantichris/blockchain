@@ -33,6 +33,7 @@ var mutex = &sync.Mutex{}
 var blockchain []Block
 var consensus Consensus
 
+// Block respresents each block in the blockchain.
 type Block struct {
 	Index        int
 	Timestamp    string
