@@ -8,28 +8,56 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	New(NoConsensus)
-
-	if len(blockchain) == 0 {
-		t.Fatal("genesis block was not generated")
+	cases := []struct {
+		name string
+		c    Consensus
+	}{
+		{name: "creates new no consensus blockchain", c: NoConsensus},
+		{name: "creates new proof-of-work blockchain", c: ProofOfWork},
 	}
 
-	got := blockchain[0]
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			blockchain = nil
+			New(tt.c)
 
-	if got.Index != 0 {
-		t.Errorf("genesis block has an incorrect Index %d want %d", got.Index, 0)
+			if len(blockchain) == 0 {
+				t.Fatal("genesis block was not generated")
+			}
+
+			got := blockchain[0]
+
+			if got.Index != 0 {
+				t.Errorf("genesis block has an incorrect Index %d want %d", got.Index, 0)
+			}
+
+			if got.Timestamp == "" {
+				t.Error("genesis block has an empty Timestamp")
+			}
+
+			if consensus != tt.c {
+				t.Errorf("the consensus was not set correctly: got %q want %q", consensus.String(), tt.c.String())
+			}
+		})
 	}
 
-	if got.Timestamp == "" {
-		t.Error("genesis block has an empty Timestamp")
-	}
+	t.Run("does not overwrite existing blockchain", func(t *testing.T) {
+		blockchain = nil
+		New(NoConsensus)
 
-	if consensus != NoConsensus {
-		t.Errorf("the consensus was not set correctly: got %q want %q", consensus.String(), NoConsensus.String())
-	}
+		block1 := blockchain[0]
+
+		New(NoConsensus)
+		block2 := blockchain[0]
+
+		if block1 != block2 {
+			t.Errorf("a new blockchain overwrote the old blockchain, block1: %v block2: %v", block1, block2)
+		}
+	})
 }
 
 func TestAddBlock(t *testing.T) {
+	blockchain = nil
 	New(NoConsensus)
 
 	data := `{"key": "value"}`
