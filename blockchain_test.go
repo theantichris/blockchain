@@ -21,11 +21,11 @@ func TestNew(t *testing.T) {
 			blockchain = Blockchain{}
 			New(tt.c)
 
-			if len(blockchain.blocks) == 0 {
+			if blockchain.Length() == 0 {
 				t.Fatal("genesis block was not generated")
 			}
 
-			got := blockchain.blocks[0]
+			got := blockchain.Block(0)
 
 			if got.Index != 0 {
 				t.Errorf("genesis block has an incorrect Index %d want %d", got.Index, 0)
@@ -45,10 +45,10 @@ func TestNew(t *testing.T) {
 		blockchain = Blockchain{}
 		New(NoConsensus)
 
-		block1 := blockchain.blocks[0]
+		block1 := blockchain.Block(0)
 
 		New(NoConsensus)
-		block2 := blockchain.blocks[0]
+		block2 := blockchain.Block(0)
 
 		if block1 != block2 {
 			t.Errorf("a new blockchain overwrote the old blockchain, block1: %v block2: %v", block1, block2)
@@ -62,17 +62,18 @@ func TestAddBlock(t *testing.T) {
 
 	data := `{"key": "value"}`
 	newBlock := AddBlock(data)
+	length := blockchain.Length()
 
-	if len(blockchain.blocks) != 2 {
+	if length != 2 {
 		t.Fatal("the block was not added to the chain")
 	}
 
-	if newBlock.Index != len(blockchain.blocks)-1 {
-		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, len(blockchain.blocks)-1)
+	if newBlock.Index != length-1 {
+		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, length-1)
 	}
 
-	if newBlock != blockchain.blocks[len(blockchain.blocks)-1] {
-		t.Errorf("the block does not match last block on chain: got %v want %v", newBlock, blockchain.blocks[len(blockchain.blocks)-1])
+	if newBlock != blockchain.Block(length-1) {
+		t.Errorf("the block does not match last block on chain: got %v want %v", newBlock, blockchain.Block(length-1))
 	}
 
 	if newBlock.Timestamp == "" {
@@ -83,8 +84,8 @@ func TestAddBlock(t *testing.T) {
 		t.Errorf("the data was not saved to the block: got %q want %q", newBlock.Data, data)
 	}
 
-	if newBlock.PreviousHash != blockchain.blocks[newBlock.Index-1].Hash {
-		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, blockchain.blocks[newBlock.Index-1].Hash)
+	if newBlock.PreviousHash != blockchain.Block(newBlock.Index-1).Hash {
+		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, blockchain.Block(newBlock.Index-1).Hash)
 	}
 
 	if newBlock.Hash != newBlock.calculateHash() {

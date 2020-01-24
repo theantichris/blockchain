@@ -23,6 +23,16 @@ func (bc Blockchain) Consensus() string {
 	return bc.consensus.String()
 }
 
+// Block returns the block from the specified index.
+func (bc Blockchain) Block(index int) Block {
+	return bc.blocks[index]
+}
+
+// Length returns the amount of blocks on the chain.
+func (bc Blockchain) Length() int {
+	return len(bc.blocks)
+}
+
 // Block respresents each block in the blockchain.
 type Block struct {
 	Index        int
@@ -56,20 +66,20 @@ func New(consensus Consensus) {
 // AddBlock creates a new block, adds it to the blockchain, and returns the new block.
 func AddBlock(data string) Block {
 	t := time.Now()
-	index := len(blockchain.blocks)
+	index := blockchain.Length()
 
 	newBlock := Block{
 		Index:        index,
 		Timestamp:    t.String(),
 		Data:         data,
-		PreviousHash: blockchain.blocks[index-1].Hash,
+		PreviousHash: blockchain.Block(index - 1).Hash,
 	}
 	newBlock.Hash = newBlock.calculateHash()
 
 	newBlocks := append(blockchain.blocks, newBlock)
 
 	mutex.Lock()
-	if len(newBlocks) > len(blockchain.blocks) {
+	if len(newBlocks) > blockchain.Length() {
 		blockchain.blocks = newBlocks
 	}
 	mutex.Unlock()
