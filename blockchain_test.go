@@ -18,14 +18,14 @@ func TestNew(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			blockchain = nil
+			blockchain = Blockchain{}
 			New(tt.c)
 
-			if len(blockchain) == 0 {
+			if len(blockchain.blocks) == 0 {
 				t.Fatal("genesis block was not generated")
 			}
 
-			got := blockchain[0]
+			got := blockchain.blocks[0]
 
 			if got.Index != 0 {
 				t.Errorf("genesis block has an incorrect Index %d want %d", got.Index, 0)
@@ -35,20 +35,20 @@ func TestNew(t *testing.T) {
 				t.Error("genesis block has an empty Timestamp")
 			}
 
-			if consensus != tt.c {
-				t.Errorf("the consensus was not set correctly: got %q want %q", consensus.String(), tt.c.String())
+			if blockchain.consensus != tt.c {
+				t.Errorf("the consensus was not set correctly: got %q want %q", blockchain.consensus.String(), tt.c.String())
 			}
 		})
 	}
 
 	t.Run("does not overwrite existing blockchain", func(t *testing.T) {
-		blockchain = nil
+		blockchain = Blockchain{}
 		New(NoConsensus)
 
-		block1 := blockchain[0]
+		block1 := blockchain.blocks[0]
 
 		New(NoConsensus)
-		block2 := blockchain[0]
+		block2 := blockchain.blocks[0]
 
 		if block1 != block2 {
 			t.Errorf("a new blockchain overwrote the old blockchain, block1: %v block2: %v", block1, block2)
@@ -57,22 +57,22 @@ func TestNew(t *testing.T) {
 }
 
 func TestAddBlock(t *testing.T) {
-	blockchain = nil
+	blockchain = Blockchain{}
 	New(NoConsensus)
 
 	data := `{"key": "value"}`
 	newBlock := AddBlock(data)
 
-	if len(blockchain) != 2 {
+	if len(blockchain.blocks) != 2 {
 		t.Fatal("the block was not added to the chain")
 	}
 
-	if newBlock.Index != len(blockchain)-1 {
-		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, len(blockchain)-1)
+	if newBlock.Index != len(blockchain.blocks)-1 {
+		t.Errorf("the block was not indexed correctly, got %d want %d", newBlock.Index, len(blockchain.blocks)-1)
 	}
 
-	if newBlock != blockchain[len(blockchain)-1] {
-		t.Errorf("the block does not match last block on chain: got %v want %v", newBlock, blockchain[len(blockchain)-1])
+	if newBlock != blockchain.blocks[len(blockchain.blocks)-1] {
+		t.Errorf("the block does not match last block on chain: got %v want %v", newBlock, blockchain.blocks[len(blockchain.blocks)-1])
 	}
 
 	if newBlock.Timestamp == "" {
@@ -83,8 +83,8 @@ func TestAddBlock(t *testing.T) {
 		t.Errorf("the data was not saved to the block: got %q want %q", newBlock.Data, data)
 	}
 
-	if newBlock.PreviousHash != blockchain[newBlock.Index-1].Hash {
-		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, blockchain[newBlock.Index-1].Hash)
+	if newBlock.PreviousHash != blockchain.blocks[newBlock.Index-1].Hash {
+		t.Errorf("the previous block's hash does not match: got %q want %q", newBlock.PreviousHash, blockchain.blocks[newBlock.Index-1].Hash)
 	}
 
 	if newBlock.Hash != newBlock.calculateHash() {

@@ -10,9 +10,13 @@ import (
 )
 
 var mutex = &sync.Mutex{}
+var blockchain Blockchain
 
-var blockchain []Block
-var consensus Consensus
+// Blockchain stores information on the chain as well as the blocks.
+type Blockchain struct {
+	blocks    []Block
+	consensus Consensus
+}
 
 // Block respresents each block in the blockchain.
 type Block struct {
@@ -24,12 +28,12 @@ type Block struct {
 }
 
 // New initializes the blockchain with a genesis block.
-func New(c Consensus) {
-	if blockchain != nil {
+func New(consensus Consensus) {
+	if blockchain.blocks != nil {
 		return
 	}
 
-	consensus = c
+	blockchain.consensus = consensus
 
 	t := time.Now()
 
@@ -40,25 +44,29 @@ func New(c Consensus) {
 	genesisBlock.Hash = genesisBlock.calculateHash()
 
 	mutex.Lock()
-	blockchain = append(blockchain, genesisBlock)
+	blockchain.blocks = append(blockchain.blocks, genesisBlock)
 	mutex.Unlock()
 }
 
 // AddBlock creates a new block, adds it to the blockchain, and returns the new block.
 func AddBlock(data string) Block {
 	t := time.Now()
-	index := len(blockchain)
+	index := len(blockchain.blocks)
 
 	newBlock := Block{
 		Index:        index,
 		Timestamp:    t.String(),
 		Data:         data,
-		PreviousHash: blockchain[index-1].Hash,
+		PreviousHash: blockchain.blocks[index-1].Hash,
 	}
 	newBlock.Hash = newBlock.calculateHash()
 
+	newBlocks := append(blockchain.blocks, newBlock)
+
 	mutex.Lock()
-	blockchain = append(blockchain, newBlock)
+	if len(newBlocks) > len(blockchain.blocks) {
+		blockchain.blocks = newBlocks
+	}
 	mutex.Unlock()
 
 	return newBlock
