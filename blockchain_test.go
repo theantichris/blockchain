@@ -8,7 +8,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	New()
+	New(NoConsensus)
 
 	if len(blockchain) == 0 {
 		t.Fatal("genesis block was not generated")
@@ -23,10 +23,14 @@ func TestNew(t *testing.T) {
 	if got.Timestamp == "" {
 		t.Error("genesis block has an empty Timestamp")
 	}
+
+	if consensus != NoConsensus {
+		t.Errorf("the consensus was not set correctly: got %q want %q", consensus.String(), NoConsensus.String())
+	}
 }
 
 func TestAddBlock(t *testing.T) {
-	New()
+	New(NoConsensus)
 
 	data := `{"key": "value"}`
 	newBlock := AddBlock(data)

@@ -9,9 +9,29 @@ import (
 	"time"
 )
 
+// Consensus is an enum used to set what type of consensus mechanism the blockchain will use.
+type Consensus int
+
+const (
+	// NoConsensus sets the blockchain to no use a consensus mechanism.
+	NoConsensus Consensus = iota + 1
+	// ProofOfWork sets the blockchain to use a proof-of-work mechanism.
+	ProofOfWork
+)
+
+func (c Consensus) String() string {
+	names := [...]string{
+		"No Consensus",
+		"Proof-Of-Work", // TODO: implement proof-of-work
+	}
+
+	return names[c]
+}
+
 var mutex = &sync.Mutex{}
 
 var blockchain []block
+var consensus Consensus
 
 type block struct {
 	Index        int
@@ -22,10 +42,12 @@ type block struct {
 }
 
 // New initializes the blockchain with a genesis block.
-func New() {
+func New(c Consensus) {
 	if blockchain != nil {
 		return
 	}
+
+	consensus = c
 
 	t := time.Now()
 
