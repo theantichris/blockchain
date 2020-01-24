@@ -18,6 +18,11 @@ type Blockchain struct {
 	consensus Consensus
 }
 
+// Consensus returns the name of the consensus mechanism the blockchain is using.
+func (bc Blockchain) Consensus() string {
+	return bc.consensus.String()
+}
+
 // Block respresents each block in the blockchain.
 type Block struct {
 	Index        int

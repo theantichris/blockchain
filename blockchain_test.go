@@ -35,8 +35,8 @@ func TestNew(t *testing.T) {
 				t.Error("genesis block has an empty Timestamp")
 			}
 
-			if blockchain.consensus != tt.c {
-				t.Errorf("the consensus was not set correctly: got %q want %q", blockchain.consensus.String(), tt.c.String())
+			if blockchain.Consensus() != tt.c.String() {
+				t.Errorf("the consensus was not set correctly: got %q want %q", blockchain.Consensus(), tt.c.String())
 			}
 		})
 	}
