@@ -65,7 +65,7 @@ func TestAddBlock(t *testing.T) {
 }
 
 func TestCalculateHash(t *testing.T) {
-	newBlock := block{
+	newBlock := Block{
 		Index:        0,
 		Timestamp:    "timestamp string",
 		Data:         "data string",

@@ -30,10 +30,10 @@ func (c Consensus) String() string {
 
 var mutex = &sync.Mutex{}
 
-var blockchain []block
+var blockchain []Block
 var consensus Consensus
 
-type block struct {
+type Block struct {
 	Index        int
 	Timestamp    string
 	Data         string
@@ -51,7 +51,7 @@ func New(c Consensus) {
 
 	t := time.Now()
 
-	genesisBlock := block{
+	genesisBlock := Block{
 		Index:     0,
 		Timestamp: t.String(),
 	}
@@ -63,11 +63,11 @@ func New(c Consensus) {
 }
 
 // AddBlock creates a new block, adds it to the blockchain, and returns the new block.
-func AddBlock(data string) block {
+func AddBlock(data string) Block {
 	t := time.Now()
 	index := len(blockchain)
 
-	newBlock := block{
+	newBlock := Block{
 		Index:        index,
 		Timestamp:    t.String(),
 		Data:         data,
@@ -82,7 +82,7 @@ func AddBlock(data string) block {
 	return newBlock
 }
 
-func (b block) calculateHash() string {
+func (b Block) calculateHash() string {
 	record := strconv.Itoa(b.Index) + b.Timestamp + b.Data + b.PreviousHash
 
 	h := sha256.New()
