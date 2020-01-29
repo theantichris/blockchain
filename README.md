@@ -1,6 +1,7 @@
 # blockchain
 
 [![GoDoc](https://godoc.org/github.com/theantichris/blockchain?status.svg)](https://godoc.org/github.com/theantichris/blockchain)
+[![Actions Status](https://github.com/theantichris/blockchain/workflows/Go/badge.svg)](https://github.com/theantichris/blockchain/actions)
 
 A library for creating and running blockchains.
 
