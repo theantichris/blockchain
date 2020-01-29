@@ -1,5 +1,7 @@
 # blockchain
 
+[![GoDoc](https://godoc.org/github.com/theantichris/blockchain?status.svg)](https://godoc.org/github.com/theantichris/blockchain)
+
 A library for creating and running blockchains.
 
 ## Install
