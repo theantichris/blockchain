@@ -33,6 +33,11 @@ func (bc Blockchain) Length() int {
 	return len(bc.blocks)
 }
 
+// Blocks returns a slice containing the blocks in the blockchain.
+func (bc Blockchain) Blocks() []Block {
+	return bc.blocks
+}
+
 // Block respresents each block in the blockchain.
 type Block struct {
 	Index        int

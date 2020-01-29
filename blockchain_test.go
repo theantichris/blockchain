@@ -93,6 +93,25 @@ func TestAddBlock(t *testing.T) {
 	}
 }
 
+func TestBlocks(t *testing.T) {
+	New(NoConsensus)
+
+	data := `{"key": "value"}`
+	AddBlock(data)
+
+	bc := blockchain.Blocks()
+
+	if len(bc) != blockchain.Length() {
+		t.Errorf("got %v want %v", bc, blockchain.Blocks())
+	}
+
+	for i, block := range bc {
+		if block != blockchain.blocks[i] {
+			t.Errorf("got %v want %v", bc, blockchain.Blocks())
+		}
+	}
+}
+
 func TestCalculateHash(t *testing.T) {
 	newBlock := Block{
 		Index:        0,
